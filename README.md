@@ -17,11 +17,6 @@ A Cordova plugin that retrieves the list of installed Android applications (pack
 
 ### Local install (recommended for development)
 
-```bash
-cordova plugin add file:/absolute/path/to/cordova-plugin-packages-list
-```
-
-### From packaged `.tgz`
 
 ```bash
 cordova plugin add file:/absolute/path/to/cordova-plugin-packages-list-1.0.0.tgz
@@ -114,21 +109,6 @@ When submitting your app, clearly state:
 * How this data is used in core functionality
 * That the permission is essential and cannot be replaced with a narrower alternative
 
-Example justification:
-
-> This application requires access to the list of installed applications in order to perform core functionality such as security analysis, application management, or user-requested inspection of installed software. The use of `QUERY_ALL_PACKAGES` is strictly limited to these purposes and is necessary for the app to function as intended.
-
-Failure to properly justify this permission may result in app rejection or removal from Google Play.
-
----
-
-## Notes
-
-* On Android 11+, without this permission, the plugin will return a limited or empty list
-* Behavior may vary depending on device manufacturer and OS restrictions
-* Always test on a real device
-
----
 
 ## License
 
