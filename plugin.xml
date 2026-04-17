@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<plugin id="cordova-plugin-packages-list" version="1.0.0"
+<plugin id="cordova-plugin-packages-list" version="1.0.1"
         xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -21,10 +21,6 @@
         <source-file
             src="src/android/es/japgcv/packageslist/PackagesList.java"
             target-dir="src/es/japgcv/packageslist" />
-
-        <config-file target="AndroidManifest.xml" parent="/manifest">
-            <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
-        </config-file>
 
     </platform>
 
