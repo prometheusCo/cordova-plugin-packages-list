@@ -70,11 +70,6 @@ public class PackagesList extends CordovaPlugin {
         final Context context = cordova.getContext();
         final boolean noPermissions = !hasPermissionAlt(context);
 
-        if (noPermissions) {
-            callbackContext.error("Missing QUERY_ALL_PACKAGES in manifest!");
-            return true;
-        }
-
         cordova.getThreadPool().execute(new Runnable() {
 
             @Override
@@ -86,8 +81,11 @@ public class PackagesList extends CordovaPlugin {
                     Set<String> seen = new HashSet<>(); // Used for arking seen packages
 
                     PackageManager pm = context.getPackageManager();
+
                     // List of packages/apps
-                    List<ApplicationInfo> apps = pm.getInstalledApplications(0);
+                    List<ApplicationInfo> pckgs = pm.getInstalledApplications(0);
+                    // with a declared activity as fallback
+                    List<ResolveInfo> apps = null;
 
                     if (noPermissions) {
 
@@ -96,17 +94,30 @@ public class PackagesList extends CordovaPlugin {
 
                         // If no QUERY_ALL_PACKAGES permission we use packages
                         // with a declared activity as fallback
-                        List<ApplicationInfo> app = pm.queryIntentActivities(intent, 0);
+                        apps = pm.queryIntentActivities(intent, 0);
 
                     }
 
-                    for (ApplicationInfo app : apps) {
+                    int size = noPermissions ? apps.size() : pckgs.size();
+
+                    // Main packages/ apps listing loop
+                    for (int i = 0; i < size; i++) {
+
+                        ApplicationInfo app;
+
+                        if (noPermissions) {
+
+                            ResolveInfo r = apps.get(i);
+                            app = pm.getApplicationInfo(r.activityInfo.packageName, 0);
+
+                        } else {
+                            app = pckgs.get(i);
+                        }
+
+                        String packageName = app.packageName;
 
                         boolean isSystem = (app.flags &
                                 (ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP)) != 0;
-
-                        if (noPermissions)
-                            app = app.activityInfo;
 
                         if (noPermissions && seen.contains(packageName))
                             continue;
@@ -116,14 +127,18 @@ public class PackagesList extends CordovaPlugin {
                             JSONObject obj = new JSONObject();
                             obj.put("packageName", app.packageName);
                             obj.put("sourceDir", app.sourceDir);
-
                             result.put(obj);
+
+                            if (noPermissions)
+                                seen.add(packageName);
+
                         }
                     }
 
                     callbackContext.success(result);
 
                 } catch (Exception e) {
+
                     callbackContext.error(e != null ? e.toString() : "Unknown error");
                 }
             }
