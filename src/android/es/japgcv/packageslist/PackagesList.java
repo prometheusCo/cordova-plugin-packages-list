@@ -64,11 +64,6 @@ public class PackagesList extends CordovaPlugin {
         final Context context = cordova.getContext();
         final boolean noPermissions = !hasPermissionAlt(context);
 
-        if (!onlyUser && !listAll) {
-            callbackContext.error("Invalid action. Allowed: [listAll, listUser]!");
-            return true;
-        }
-
         if (noPermissions) {
             callbackContext.error("Missing QUERY_ALL_PACKAGES in manifest!");
             return true;
@@ -87,9 +82,6 @@ public class PackagesList extends CordovaPlugin {
                     JSONArray result = new JSONArray();
 
                     for (ApplicationInfo app : apps) {
-
-                        if (app == null || app.packageName == null)
-                            continue;
 
                         boolean isSystem = (app.flags &
                                 (ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP)) != 0;
