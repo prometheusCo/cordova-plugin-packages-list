@@ -143,8 +143,30 @@ public class PackagesList extends CordovaPlugin {
                         if (listAll || (onlyUser && !isSystem)) {
 
                             JSONObject obj = new JSONObject();
+                            PackageInfo pi = null;
+                            long firstInstallTime = 0;
+                            long lastUpdateTime = 0;
+
+                            CharSequence label = pm.getApplicationLabel(app);
+                            obj.put("label", label != null ? label.toString() : "");
+
                             obj.put("packageName", app.packageName);
                             obj.put("sourceDir", app.sourceDir);
+                            obj.put("systemApp", isSystem);
+                            obj.put("enabled", app.enabled);
+
+                            try {
+
+                                pi = pm.getPackageInfo(packageName, 0);
+                                firstInstallTime = pi.firstInstallTime;
+                                lastUpdateTime = pi.lastUpdateTime;
+
+                                obj.put("installedTimestamp", firstInstallTime);
+                                obj.put("updatedTimestamp", lastUpdateTime);
+
+                            } catch (Exception e) {
+                            }
+
                             result.put(obj);
 
                             if (noPermissions)
