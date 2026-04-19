@@ -10,6 +10,11 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageInfo;
 
+import java.util.Set;
+import java.util.HashSet;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
+
 import java.util.List;
 
 public class PackagesList extends CordovaPlugin {
@@ -56,6 +61,7 @@ public class PackagesList extends CordovaPlugin {
     //
     // Main code
     //
+
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) {
 
@@ -76,15 +82,34 @@ public class PackagesList extends CordovaPlugin {
 
                 try {
 
+                    JSONArray result = new JSONArray(); // Return list for each package
+                    Set<String> seen = new HashSet<>(); // Used for arking seen packages
+
                     PackageManager pm = context.getPackageManager();
+                    // List of packages/apps
                     List<ApplicationInfo> apps = pm.getInstalledApplications(0);
 
-                    JSONArray result = new JSONArray();
+                    if (noPermissions) {
+
+                        Intent intent = new Intent(Intent.ACTION_MAIN, null);
+                        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+                        // If no QUERY_ALL_PACKAGES permission we use packages
+                        // with a declared activity as fallback
+                        List<ApplicationInfo> app = pm.queryIntentActivities(intent, 0);
+
+                    }
 
                     for (ApplicationInfo app : apps) {
 
                         boolean isSystem = (app.flags &
                                 (ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP)) != 0;
+
+                        if (noPermissions)
+                            app = app.activityInfo;
+
+                        if (noPermissions && seen.contains(packageName))
+                            continue;
 
                         if (listAll || (onlyUser && !isSystem)) {
 
@@ -102,6 +127,7 @@ public class PackagesList extends CordovaPlugin {
                     callbackContext.error(e != null ? e.toString() : "Unknown error");
                 }
             }
+
         });
 
         return true;
