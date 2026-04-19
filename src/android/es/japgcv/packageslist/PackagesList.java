@@ -19,6 +19,7 @@ import java.util.List;
 
 public class PackagesList extends CordovaPlugin {
 
+    //
     // Helper - checks if QUERY_ALL_PACKAGES exists in manifest
     public static boolean hasPermissionAlt(Context context) {
 
@@ -59,9 +60,21 @@ public class PackagesList extends CordovaPlugin {
     }
 
     //
+    // Helper that comunicates to main loop when to skip a duplicated/ bad pos
+    public static boolean skipPosition(Set<String> seen, boolean noPermissions, ApplicationInfo app) {
+
+        if (app == null || app.packageName == null)
+            return true;
+
+        if ((noPermissions && seen.contains(app.packageName)))
+            return true;
+
+        return false;
+    }
+
+    //
     // Main code
     //
-
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) {
 
@@ -98,7 +111,7 @@ public class PackagesList extends CordovaPlugin {
 
                     }
 
-                    int size = noPermissions ? apps.size() : pckgs.size();
+                    int size = noPermissions ? (apps != null ? apps.size() : 0) : pckgs.size();
 
                     // Main packages/ apps listing loop
                     for (int i = 0; i < size; i++) {
@@ -108,19 +121,24 @@ public class PackagesList extends CordovaPlugin {
                         if (noPermissions) {
 
                             ResolveInfo r = apps.get(i);
-                            app = pm.getApplicationInfo(r.activityInfo.packageName, 0);
+                            try {
+                                app = pm.getApplicationInfo(r.activityInfo.packageName, 0);
+                            } catch (Exception e) {
+                                app = null;
+                            }
 
                         } else {
                             app = pckgs.get(i);
                         }
 
+                        // Some data integrity checks to prevent returning empty/corrupted entries
+                        if (skipPosition(seen, noPermissions, app))
+                            continue;
+
                         String packageName = app.packageName;
 
                         boolean isSystem = (app.flags &
                                 (ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP)) != 0;
-
-                        if (noPermissions && seen.contains(packageName))
-                            continue;
 
                         if (listAll || (onlyUser && !isSystem)) {
 
