@@ -4,8 +4,6 @@ Plugin de Cordova que permite obtener la lista de paquetes instalados en Android
 
 ## Instalación
 
-### Instalación local (recomendada para desarrollo)
-
 ```bash
 cordova plugin add https://github.com/prometheusCo/cordova-plugin-packages-list/releases/download/v.1.0.2/cordova-plugin-packages-list-1.0.2.tgz
 ```
@@ -127,8 +125,6 @@ A Cordova plugin that retrieves the list of installed Android applications, incl
 ---
 
 ## Installation
-
-### Local install (recommended for development)
 
 ```bash
 cordova plugin add https://github.com/prometheusCo/cordova-plugin-packages-list/releases/download/v.1.0.2/cordova-plugin-packages-list-1.0.2.tgz
