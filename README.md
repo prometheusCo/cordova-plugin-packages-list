@@ -1,30 +1,31 @@
 # cordova-plugin-packages-list
 
-Plugin de Cordova que permite obtener la lista de paquetes instalados en Android, incluyendo su nombre de paquete y la ruta del APK.
-
+Plugin de Cordova que permite obtener la lista de paquetes instalados en Android, incluyendo su nombre de paquete, ruta del APK y metadatos básicos.
 
 ## Instalación
 
 ### Instalación local (recomendada para desarrollo)
 
-    cordova plugin add file:/ruta/absoluta/a/cordova-plugin-packages-list-1.x.x.tgz
+```bash
+cordova plugin add https://github.com/prometheusCo/cordova-plugin-packages-list/releases/download/v.1.0.2/cordova-plugin-packages-list-1.0.2.tgz
+```
 
 ---
 
 ## Uso
 
-    document.addEventListener('deviceready', function () {
-
-        cordova.plugins.packagesList.listAll(
-            function (res) {
-                console.log("RESULT:", res);
-            },
-            function (err) {
-                console.error("ERROR:", err);
-            }
-        );
-
-    });
+```javascript
+document.addEventListener('deviceready', function () {
+    cordova.plugins.packagesList.listAll(
+        function (res) {
+            console.log("RESULT:", res);
+        },
+        function (err) {
+            console.error("ERROR:", err);
+        }
+    );
+});
+```
 
 ---
 
@@ -32,22 +33,29 @@ Plugin de Cordova que permite obtener la lista de paquetes instalados en Android
 
 ### listAll(success, error)
 
-Devuelve todos los paquetes instalados (incluyendo los del sistema).
+Devuelve todas las aplicaciones visibles (incluyendo las del sistema).
 
 ### listUser(success, error)
 
-Devuelve únicamente los paquetes instalados por el usuario.
+Devuelve únicamente las aplicaciones visibles instaladas por el usuario.
 
 ---
 
 ## Formato de respuesta
 
-    [
-      {
-        "packageName": "com.example.app",
-        "sourceDir": "/data/app/..."
-      }
-    ]
+```json
+[
+  {
+    "label": "App Name",
+    "packageName": "com.example.app",
+    "sourceDir": "/data/app/...",
+    "systemApp": false,
+    "enabled": true,
+    "installedTimestamp": 1670000000000,
+    "updatedTimestamp": 1675000000000
+  }
+]
+```
 
 ---
 
@@ -55,11 +63,38 @@ Devuelve únicamente los paquetes instalados por el usuario.
 
 ### Android 11+ (API 30 o superior)
 
-Para obtener la lista completa de paquetes instalados, la aplicación debe declarar:
+Android introduce restricciones de visibilidad de paquetes.
 
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+### Modo completo (con permiso)
 
-Este permiso es necesario debido a las restricciones de visibilidad de paquetes introducidas en Android 11.
+Para obtener la lista completa de aplicaciones instaladas, la aplicación debe declarar:
+
+```xml
+<uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+```
+
+---
+
+### Modo limitado (sin permiso)
+
+Si no se declara el permiso, el plugin utiliza un fallback basado en apps con launcher.
+
+Para que este modo funcione correctamente, el plugin declara automáticamente:
+
+```xml
+<queries>
+    <intent>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+    </intent>
+</queries>
+```
+
+Este modo:
+
+- Devuelve aplicaciones con icono en el launcher  
+- No devuelve todas las apps instaladas  
+- Está limitado por las reglas de visibilidad de Android  
 
 ---
 
@@ -69,16 +104,16 @@ El permiso `QUERY_ALL_PACKAGES` está considerado sensible por Google Play.
 
 Su uso debe estar justificado durante la publicación. Este plugin solo debería utilizarse si la aplicación encaja en alguna de las categorías permitidas, como:
 
-- Aplicaciones de seguridad o antivirus
-- Gestión de dispositivos
-- Control parental
-- Herramientas de gestión de archivos o búsqueda con necesidad de visibilidad amplia
+- Aplicaciones de seguridad o antivirus  
+- Gestión de dispositivos  
+- Control parental  
+- Herramientas de gestión de archivos o búsqueda con necesidad de visibilidad amplia  
 
+---
 
 ## Licencia
 
 MIT
-
 
 #
 #
@@ -87,16 +122,7 @@ MIT
 
 # cordova-plugin-packages-list
 
-A Cordova plugin that retrieves the list of installed packages, including their package name and source directory.
-
----
-
-## Features
-
-* List all installed applications (including system apps)
-* List only user-installed applications
-* Returns structured JSON data
-* Works asynchronously
+A Cordova plugin that retrieves the list of installed Android applications, including metadata such as package name, APK path, and basic information.
 
 ---
 
@@ -104,9 +130,8 @@ A Cordova plugin that retrieves the list of installed packages, including their 
 
 ### Local install (recommended for development)
 
-
 ```bash
-cordova plugin add file:/ruta/absoluta/a/cordova-plugin-packages-list-1.x.x.tgz
+cordova plugin add https://github.com/prometheusCo/cordova-plugin-packages-list/releases/download/v.1.0.2/cordova-plugin-packages-list-1.0.2.tgz
 ```
 
 ---
@@ -115,7 +140,6 @@ cordova plugin add file:/ruta/absoluta/a/cordova-plugin-packages-list-1.x.x.tgz
 
 ```javascript
 document.addEventListener('deviceready', function () {
-
     cordova.plugins.packagesList.listAll(
         function (res) {
             console.log("RESULT:", res);
@@ -124,19 +148,20 @@ document.addEventListener('deviceready', function () {
             console.error("ERROR:", err);
         }
     );
-
 });
 ```
 
-### Methods
+---
 
-#### `listAll(success, error)`
+## Methods
 
-Returns all installed applications (including system apps).
+### listAll(success, error)
 
-#### `listUser(success, error)`
+Returns all visible applications (including system apps).
 
-Returns only user-installed applications.
+### listUser(success, error)
+
+Returns only visible user-installed applications.
 
 ---
 
@@ -145,8 +170,13 @@ Returns only user-installed applications.
 ```json
 [
   {
+    "label": "App Name",
     "packageName": "com.example.app",
-    "sourceDir": "/data/app/..."
+    "sourceDir": "/data/app/...",
+    "systemApp": false,
+    "enabled": true,
+    "installedTimestamp": 1670000000000,
+    "updatedTimestamp": 1675000000000
   }
 ]
 ```
@@ -157,13 +187,38 @@ Returns only user-installed applications.
 
 ### Android 11+ (API 30 and above)
 
+Android introduces package visibility restrictions.
+
+### Full mode (with permission)
+
 To retrieve the full list of installed applications, your app must declare:
 
 ```xml
 <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
 ```
 
-This permission is required due to package visibility restrictions introduced in Android 11.
+---
+
+### Limited mode (no permission)
+
+If the permission is not declared, the plugin uses a launcher-based fallback.
+
+To make this mode work properly, the plugin automatically declares:
+
+```xml
+<queries>
+    <intent>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+    </intent>
+</queries>
+```
+
+This mode:
+
+- Returns apps with launcher icons  
+- Does NOT return all installed apps  
+- Is limited by Android visibility rules  
 
 ---
 
@@ -173,12 +228,13 @@ The `QUERY_ALL_PACKAGES` permission is considered sensitive by Google Play.
 
 You must justify its usage during app submission. This plugin should only be used if your app falls under one of the accepted categories, such as:
 
-* Antivirus or security apps
-* Device management apps
-* Parental control apps
-* File managers or search tools that require broad app visibility
+- Antivirus or security apps  
+- Device management apps  
+- Parental control apps  
+- File managers or search tools requiring broad visibility  
+
+---
 
 ## License
 
 MIT
-
