@@ -124,7 +124,9 @@ public class PackagesList extends CordovaPlugin {
                             try {
                                 app = pm.getApplicationInfo(r.activityInfo.packageName, 0);
                             } catch (Exception e) {
+                                
                                 app = null;
+                                e.printStackTrace();
                             }
 
                         } else {
@@ -165,6 +167,7 @@ public class PackagesList extends CordovaPlugin {
                                 obj.put("updatedTimestamp", lastUpdateTime);
 
                             } catch (Exception e) {
+                                e.printStackTrace();
                             }
 
                             result.put(obj);
@@ -178,7 +181,6 @@ public class PackagesList extends CordovaPlugin {
                     callbackContext.success(result);
 
                 } catch (Exception e) {
-
                     callbackContext.error(e != null ? e.toString() : "Unknown error");
                 }
             }
