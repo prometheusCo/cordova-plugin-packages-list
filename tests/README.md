@@ -4,8 +4,6 @@
 Este plugin incluye tests automáticos que se ejecutan dentro de un entorno real de Cordova usando 
 cordova-plugin-test-framework 
 
-(Los tests unitarios para Java están en  ../java_tests)
-
 
 ### Requisitos
 - Cordova CLI   
@@ -42,8 +40,6 @@ cordova-plugin-test-framework
 
 This plugin includes automated tests that run inside a real Cordova environment using 
 cordova-plugin-test-framework 
-
-(For Java unit tests go to ../java_tests)
 
 
 ### Requirements
