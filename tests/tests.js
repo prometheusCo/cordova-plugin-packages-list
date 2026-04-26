@@ -59,22 +59,63 @@ exports.defineAutoTests = function () {
         });
 
         // -------------------------------------------------
-        // 2) REAL TESTS → Android + Java execution
+        // 2) REAL TESTS → Android + Java execution ENV
         // -------------------------------------------------
         describe('Real plugin behavior (Android)', function () {
 
-            it('listAll should return an array of apps', function (done) {
+            it('listAll should return valid structured apps (all items)', function (done) {
 
                 plugin.listAll(function (res) {
 
                     expect(Array.isArray(res)).toBe(true);
 
                     if (res.length > 0) {
-                        var app = res[0];
 
-                        expect(app.packageName).toBeDefined();
-                        expect(typeof app.systemApp).toBe('boolean');
-                        expect(app.enabled).toBeDefined();
+                        var validateApp = function (app) {
+
+                            // --- existence ---
+                            expect(app).toBeDefined();
+
+                            // --- label ---
+                            expect(app.label).toBeDefined();
+                            expect(typeof app.label).toBe('string');
+                            expect(app.label.length).toBeGreaterThan(0);
+
+                            // --- packageName ---
+                            expect(app.packageName).toBeDefined();
+                            expect(typeof app.packageName).toBe('string');
+                            expect(app.packageName.length).toBeGreaterThan(0);
+
+                            // --- sourceDir ---
+                            expect(app.sourceDir).toBeDefined();
+                            expect(typeof app.sourceDir).toBe('string');
+
+                            // --- systemApp ---
+                            expect(app.systemApp).toBeDefined();
+                            expect(typeof app.systemApp).toBe('boolean');
+
+                            // --- enabled ---
+                            expect(app.enabled).toBeDefined();
+                            expect(typeof app.enabled).toBe('boolean');
+
+                            // --- installedTimestamp ---
+                            expect(app.installedTimestamp).toBeDefined();
+                            expect(typeof app.installedTimestamp).toBe('number');
+                            expect(isNaN(app.installedTimestamp)).toBe(false);
+                            expect(app.installedTimestamp).toBeGreaterThan(0);
+
+                            // --- updatedTimestamp ---
+                            expect(app.updatedTimestamp).toBeDefined();
+                            expect(typeof app.updatedTimestamp).toBe('number');
+                            expect(isNaN(app.updatedTimestamp)).toBe(false);
+                            expect(app.updatedTimestamp).toBeGreaterThan(0);
+
+                            // --- logical consistency ---
+                            expect(app.updatedTimestamp).toBeGreaterThanOrEqual(app.installedTimestamp);
+
+                        };
+
+                        res.forEach(validateApp);
                     }
 
                     done();
