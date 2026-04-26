@@ -1,7 +1,11 @@
 # Tests (Cordova Test Framework)
 
 ### Descripción
-Este plugin incluye tests automáticos que se ejecutan dentro de un entorno real de Cordova usando el framework de tests.
+Este plugin incluye tests automáticos que se ejecutan dentro de un entorno real de Cordova usando 
+cordova-plugin-test-framework 
+
+(Los tests unitarios para Java están en  ../java_tests)
+
 
 ### Requisitos
 - Cordova CLI   
@@ -9,17 +13,16 @@ Este plugin incluye tests automáticos que se ejecutan dentro de un entorno real
 
 ### Instalación y ejecución
 1. Crear app de pruebas:
-   cordova create testApp
-   cd testApp
-
+   "cordova create testApp"
+   
 2. Añadir plataforma:
    cordova platform add android
 
 3. Instalar framework de tests:
-   cordova plugin add cordova-plugin-test-framework
+   "cordova plugin add cordova-plugin-test-framework"
 
 4. Instalar este plugin:
-   cordova plugin add ../cordova-plugin-packageslist
+   "cordova plugin add ../cordova-plugin-packageslist"
 
 5. Ejecutar:
    cordova run android
@@ -30,14 +33,18 @@ Este plugin incluye tests automáticos que se ejecutan dentro de un entorno real
 - Entrar en "Auto Tests"  
 
 
-
 ---
 ---
 ---
 
 
 ### Overview
-This plugin includes automated tests that run inside a real Cordova environment using the test framework.
+
+This plugin includes automated tests that run inside a real Cordova environment using 
+cordova-plugin-test-framework 
+
+(For Java unit tests go to ../java_tests)
+
 
 ### Requirements
 - Cordova CLI installed  
@@ -45,11 +52,10 @@ This plugin includes automated tests that run inside a real Cordova environment 
 
 ### Setup & Run
 1. Create test app:
-   cordova create testApp
-   cd testApp
-
+   "cordova create testApp"
+   
 2. Add platform:
-   cordova platform add android
+   "cordova platform add android"
 
 3. Install test framework:
    cordova plugin add cordova-plugin-test-framework
