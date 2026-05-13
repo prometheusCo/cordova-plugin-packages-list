@@ -1,8 +1,7 @@
 # Tests (Cordova Test Framework)
 
 ### Descripción
-Este plugin incluye tests automáticos que se ejecutan dentro de un entorno real de Cordova usando  
-cordova-plugin-test-framework  
+Este plugin incluye tests automáticos que se ejecutan dentro de un entorno real de Cordova usando el plugin cordova-plugin-test-framework  
 
 ### Requisitos
 - Cordova CLI  
@@ -45,7 +44,7 @@ cordova-plugin-test-framework
   - Consistencia de timestamps  
   - Lógica de filtrado (`listUser` vs `listAll`) mediante invariantes (subconjunto, no solapamiento, unión total)
 
-- No se validan aspectos internos de Android (PackageManager, permisos, OEM differences), ya que están fuera del alcance del layer JavaScript.
+- No se validan aspectos internos de Android (PackageManager, permisos, OEM differences), ya que están fuera del alcance de JavaScript.
 
 ---
 
