@@ -44,7 +44,7 @@ Este plugin incluye tests automáticos que se ejecutan dentro de un entorno real
   - Consistencia de timestamps  
   - Lógica de filtrado (`listUser` vs `listAll`) mediante invariantes (subconjunto, no solapamiento, unión total)
 
-- No se validan aspectos internos de Android (PackageManager, permisos, OEM differences), ya que están fuera del alcance de JavaScript.
+- No se validan aspectos internos de Android (PackageManager, permisos, OEM differences), ya que están fuera del alcance del puente JavaScript.
 
 ---
 
